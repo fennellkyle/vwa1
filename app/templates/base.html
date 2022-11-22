@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vulnerable Web App</title>
+
+    <!-- Pico.css -->
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+
+    <!-- Custom template-->
+   <link rel="stylesheet" href="static/css/custom.css">
+  </head>
+
+
+  <body>
+
+    <!-- Nav bar -->
+    <nav>
+      <ul>
+        <li></li>
+      </ul>
+      <ul>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <li><mark>{{ message }}</mark></li>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        
+        {% if current_user.is_authenticated %}
+          <li>Signed in as <strong>{{ current_user.username }}</strong></li>
+          <li style="padding-right:50px"><a href="/logout">Log out</a></li>
+        {% else %}
+          <li style="padding-right:50px"><a href="/register">Sign in</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+
+
+    <!-- Header -->
+    <header class="container">
+      <hgroup>
+        <h1>Vulnerable Web App</h1>
+        <h2>A simple web app to test and study application vulnerabilities</h2>
+      </hgroup>
+      <nav>
+        <ul>
+          <li>
+            <details role="list">
+              <summary aria-haspopup="listbox" role="button" class="secondary">Exercises</summary>
+              <ul role="listbox">
+                <li><a href="/search-safe">Search Safe</a></li>
+                <li><a href="/search-rXSS-1">Search rXSS 1</a></li>
+                <li><a href="/ssti-1">SSTI 1</a></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    
+    <!-- Main -->
+    <main class="container">
+
+      {% block main %}
+      {% endblock %}
+
+      {% block card %}
+      {% endblock %}
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="container">
+      <small>Built by <b>Kyle Fennell</b> • <a href="https://github.com/picocss/examples/blob/master/basic-template/">LinkedIn</a> • <a href="https://github.com/picocss/examples/blob/master/basic-template/">Twitter</a></small>
+    </footer><!-- ./ Footer -->
+
+
+  </body>
+
+</html>

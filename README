@@ -1,0 +1,11 @@
+# Vulnerable Web App 1
+
+This is a simple and clean web application to demo and test web application vulneabilities.
+This version is build with Flask (Python).
+
+Run locally:
+python3 -m flask --app app/main --debug run
+
+Run in docker:
+sudo docker image build -t vwa1 .
+docker run -d --publish 8000:5000 --name vwa1 vwa1 

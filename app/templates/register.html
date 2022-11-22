@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+
+	<form action="/login" method="POST">
+	  	<article class=register>
+		  	<h3 align="center">Login</h3>
+
+		    {{ lform.username.label }}
+		    {{ lform.username }}
+
+		    {{ lform.password.label }}
+		    {{ lform.password }}
+
+		  	<button type="submit">Login</button>
+	    </article>
+	</form>
+
+	<h3 align="center">OR</h3>
+
+	<form action="/register" method="POST">
+	  	<article class=register>
+		  	<h3 align="center">Register</h3>
+
+		    {{ form.username.label }}
+		    {{ form.username }}
+
+		    {{ form.email.label }}
+		    {{ form.email }}
+
+		    {{ form.password.label }}
+		    {{ form.password }}	
+
+			<button type="submit">Register</button>
+		</article>
+	</form>
+
+{% endblock %}
