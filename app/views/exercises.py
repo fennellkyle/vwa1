@@ -1,4 +1,4 @@
-from flask import render_template, render_template_string, request, session
+from flask import render_template, render_template_string, request, session, abort
 
 from main import app, db
 from models import Elements
@@ -33,8 +33,13 @@ def ssti_1():
 def page_not_found(e):
 	"""
 	Non-existent pages (404)
-	This page has an XXS vulnerability and an SSTI vulernability. The user has control of the template content.
+	This page has a SSTI vulernability. The user has control of the template content.
 	See https://blog.nvisium.com/p263 
 	"""
-	main = f"<article align='center'><h2>404</h2>Oops! Sorry that <strong>{request.full_path.strip('?')}</strong> page does not exist.</article>"
+	bad_chars = set("<>")
+	path = request.full_path
+	if any((x in bad_chars) for x in path):
+		main = f"<article align='center'><h2>404</h2>Nice try! No XSS here.</article>"
+	else: 
+		main = f"<article align='center'><h2>404</h2>Oops! Sorry that <strong>{request.full_path.strip('?')}</strong> page does not exist.</article>"
 	return render_template_string(f"{{% extends 'base.html' %}}{{% block main %}}{main}{{% endblock %}}"), 404
