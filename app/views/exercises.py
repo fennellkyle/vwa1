@@ -1,4 +1,12 @@
-from flask import render_template, render_template_string, request, session, abort
+import os
+import zipfile
+from deep_translator import GoogleTranslator, exceptions
+from flask import render_template, render_template_string, request, flash, session, abort
+from io import BytesIO
+from xml.dom.pulldom import parseString
+from xml.sax import make_parser
+from xml.sax.handler import feature_external_ges
+
 
 from main import app, db
 from models import Elements
@@ -27,6 +35,40 @@ def ssti_1():
 	"""
 	template = "{% extends 'index.html' %}{% block card %}<article aria-label='Card example'>Visit any endpoint that does not exist. Example: <strong>http://127.0.0.1/thisdoesntexist</strong>. Try and exploit the SSTI vulernability.{% endblock %}"
 	return render_template_string(template)
+
+
+@app.route("/translate-xxe-1", methods=["GET", "POST"])
+def translate_xxe_1():
+    """
+    The XML parser is configured to process external entities. Newer versions of 'pulldom' disable this by default. See https://docs.python.org/3/library/xml.dom.pulldom.html#module-xml.dom.pulldom
+	"""
+    read_content = ""
+    translated = ""
+    if request.method == "POST":
+        document = request.files['file']
+        file_ext = os.path.splitext(document.filename)[1]
+        if document.filename != "" and file_ext in app.config['UPLOAD_EXTENSIONS']:
+            if file_ext == ".txt":
+                read_content = document.read().decode("utf-8")
+            elif file_ext == ".docx":
+                docx_zip = zipfile.ZipFile(BytesIO(document.read()))
+                docx_file = docx_zip.read('word/document.xml')
+                parser = make_parser()
+                parser.setFeature(feature_external_ges, True) # Overriding the safe defaults.
+                parsed_xml = parseString(docx_file.decode(), parser=parser)
+                for event, node in parsed_xml:
+                    if event == "CHARACTERS":
+                        read_content += f'{node.toxml()}\n'
+            try:
+                translated = GoogleTranslator(source='auto', target='ja').translate(read_content)
+            except exceptions.NotValidLength:
+                flash("Text length needs to be between 0 and 5000 char")
+                translated = ""
+        elif document.filename == "":
+            flash("No file selected.")
+        elif file_ext not in app.config['UPLOAD_EXTENSIONS']:
+            flash("Wrong filetype. Use only txt or docx files")
+    return render_template("translate-xxe-1.html", source=read_content, translated=translated)
 
 
 @app.errorhandler(404)
