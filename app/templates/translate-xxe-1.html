@@ -1,0 +1,21 @@
+{% extends "base.html" %} {% block main %}
+
+<article class="search">
+  <section id="form">
+    <form action="/translate-xxe-1" method="POST" enctype="multipart/form-data">
+      <h2>Translate My Doc</h2>
+
+      <input type="file" name="file" />
+      <input type="submit" value="Translate" />
+    </form>
+
+    {% if translated %}
+    <p><strong>Original Text:</strong> {{ source }}</p>
+    <p><strong>Translated Text:</strong> {{ translated }}</p>
+    {% else %}
+    <p></p>
+    {% endif %}
+  </section>
+</article>
+
+{% endblock %}

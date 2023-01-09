@@ -7,6 +7,7 @@ from models import User
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///sqlite.db'
 app.config['SECRET_KEY'] = '6rPjvjn5aXakzoldlV7zGcqFTeQcgkSJ'
+app.config["UPLOAD_EXTENSIONS"] = [".txt", ".docx"]
 
 
 from models import db
