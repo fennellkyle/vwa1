@@ -3,9 +3,12 @@
 This is a simple and clean web application to demo and test web application vulneabilities.
 This version is build with Flask (Python).
 
-Run locally:
+Run locally in debug:
 python3 -m flask --app app/main --debug run
 
 Run in docker:
 sudo docker image build -t vwa1 .
-docker run -d --publish 8000:5000 --name vwa1 vwa1 
+docker run -d --publish 8000:5000 --name vwa1 vwa1
+
+Run test suite on new PRs:
+python -m pytest
