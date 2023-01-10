@@ -1,4 +1,5 @@
 import pytest
+from io import BytesIO
 from main import app
 
 
@@ -40,4 +41,31 @@ def test_ssti_1():
 	assert "Visit any endpoint that does not exist." in html_1
 	assert "<strong>/49</strong>" in html_2
 
+
+def test_translate_xxe_1():
+    response_1 = app.test_client().get("/translate-xxe-1")
+
+    text_file = {'file': (BytesIO(b'My name is Kyle.'), 'test_file.txt')}
+    response_2 = app.test_client().post("/translate-xxe-1", data=text_file)
+    html_2 = response_2.data.decode()
+
+    docx_file_good = {
+        'file': (open('test/test1.docx', 'rb'), 'test.docx')
+    }
+    response_3 = app.test_client().post("/translate-xxe-1", data=docx_file_good)
+    html_3 = response_3.data.decode()
+
+    docx_file_bad = {
+        'file': (open('test/test2.docx', 'rb'), 'test.docx')
+    }
+    response_4 = app.test_client().post("/translate-xxe-1", data=docx_file_bad)
+    html_4 = response_4.data.decode()
+
+    assert response_1.status_code == 200
+    assert response_2.status_code == 200
+    assert response_3.status_code == 200
+    assert response_4.status_code == 200
+    assert "My name is Kyle." in html_2
+    assert "Hello. My name is Kyle." in html_3
+    assert "localhost" in html_4
 
