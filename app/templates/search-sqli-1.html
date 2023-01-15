@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% block main %}
+
+<article class="search">
+  <section id="form">
+    <form action="/search-sqli-1" method="GET">
+      <h2>Chemical Element Search</h2>
+
+      <!-- Search -->
+      <label for="search">Search</label>
+      <input type="search" id="search" name="q" placeholder="Carbon" />
+      <!-- Buttons -->
+      <input type="submit" value="Submit" />
+    </form>
+
+    {% if element %}
+    <p>
+      Results: <strong>{{ element.name }}</strong> ({{ element.symbol }}) has an
+      atomic number of {{ element.atomic_num }}.
+    </p>
+    {% elif query %}
+    <p>{{ query }} is not a valid element.</p>
+    {% else %}
+    <p></p>
+    {% endif %}
+  </section>
+</article>
+
+{% endblock %}
