@@ -28,6 +28,21 @@ def search_rxss_1():
 	return render_template("search-rXSS-1.html", element=element, query=query)
 
 
+@app.route("/search-sqli-1")
+def search_sqli_1():
+	"""
+	Vulnerability: SQL injection
+	Untrusted user input is concatenated to a database query. 
+	"""
+	if request.args.get("q"):
+		query = request.args.get("q")
+		element = db.session.execute(f'SELECT * FROM elements WHERE name="{query}";').fetchone()
+	else:
+		query = ""
+		element = ""
+	return render_template("search-sqli-1.html", element=element, query=query)
+ 
+
 @app.route("/ssti-1")
 def ssti_1():
 	"""

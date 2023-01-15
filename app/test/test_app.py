@@ -69,3 +69,13 @@ def test_translate_xxe_1():
     assert "Hello. My name is Kyle." in html_3
     assert "localhost" in html_4
 
+
+def test_search_sqli_1():
+    response_1 = app.test_client().get("/search-sqli-1")
+
+    response_2 = app.test_client().get("/search-sqli-1?q=%22+OR+1==1--")
+    html_2 = response_2.data.decode()
+
+    assert response_1.status_code == 200
+    assert response_2.status_code == 200
+    assert "<strong>Hydrogen</strong>" in html_2
